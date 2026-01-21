@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    namespace = "com.hsk.calander"
+    namespace = "com.hsk.dayflow"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.hsk.calander"
+        applicationId = "com.hsk.dayflow"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
