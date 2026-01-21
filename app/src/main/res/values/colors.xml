@@ -2,4 +2,25 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Primary colors -->
+    <color name="primary">#FF1E88E5</color>
+    <color name="primary_light">#FF6AB7FF</color>
+    <color name="primary_dark">#FF005CB2</color>
+    <color name="on_primary">#FFFFFFFF</color>
+
+    <!-- Secondary colors -->
+    <color name="secondary">#FF26A69A</color>
+    <color name="secondary_light">#FF64D8CB</color>
+    <color name="secondary_dark">#FF00766C</color>
+    <color name="on_secondary">#FF000000</color>
+
+    <!-- Background colors -->
+    <color name="background">#FFFAFAFA</color>
+    <color name="surface">#FFFFFFFF</color>
+
+    <!-- Calendar colors -->
+    <color name="today">#FF1E88E5</color>
+    <color name="weekend">#FFE57373</color>
+    <color name="holiday">#FFEF5350</color>
 </resources>
