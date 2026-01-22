@@ -57,6 +57,17 @@ interface EventDao {
     fun getEventsForDate(date: LocalDateTime): Flow<List<EventEntity>>
 
     /**
+     * 获取指定日期的可见事件
+     */
+    @Query("""
+        SELECT * FROM events 
+        WHERE (subscriptionId IS NULL OR subscriptionId IN (SELECT id FROM subscriptions WHERE isEnabled = 1))
+        AND date(startTime) <= date(:date) AND date(endTime) >= date(:date)
+        ORDER BY startTime ASC
+    """)
+    fun getVisibleEventsForDate(date: LocalDateTime): Flow<List<EventEntity>>
+
+    /**
      * 获取有提醒的事件
      */
     @Query("SELECT * FROM events WHERE reminderMinutes IS NOT NULL AND startTime > :now ORDER BY startTime ASC")
@@ -115,4 +126,46 @@ interface EventDao {
      */
     @Query("SELECT COUNT(*) FROM events")
     suspend fun getEventCount(): Int
+
+    /**
+     * 获取指定订阅的事件
+     */
+    @Query("SELECT * FROM events WHERE subscriptionId = :subscriptionId ORDER BY startTime ASC")
+    fun getEventsBySubscription(subscriptionId: Long): Flow<List<EventEntity>>
+
+    /**
+     * 删除指定订阅的所有事件
+     */
+    @Query("DELETE FROM events WHERE subscriptionId = :subscriptionId")
+    suspend fun deleteEventsBySubscription(subscriptionId: Long)
+
+    /**
+     * 获取启用的订阅ID列表
+     */
+    @Query("SELECT id FROM subscriptions WHERE isEnabled = 1")
+    suspend fun getEnabledSubscriptionIds(): List<Long>
+
+    /**
+     * 获取可见事件（排除禁用订阅的事件）
+     */
+    @Query("""
+        SELECT * FROM events 
+        WHERE subscriptionId IS NULL 
+        OR subscriptionId IN (SELECT id FROM subscriptions WHERE isEnabled = 1)
+        ORDER BY startTime ASC
+    """)
+    fun getVisibleEvents(): Flow<List<EventEntity>>
+
+    /**
+     * 获取指定日期范围内的可见事件
+     */
+    @Query("""
+        SELECT * FROM events 
+        WHERE (subscriptionId IS NULL OR subscriptionId IN (SELECT id FROM subscriptions WHERE isEnabled = 1))
+        AND (startTime >= :startDate AND startTime < :endDate 
+        OR endTime >= :startDate AND endTime < :endDate
+        OR startTime < :startDate AND endTime >= :endDate)
+        ORDER BY startTime ASC
+    """)
+    fun getVisibleEventsBetween(startDate: LocalDateTime, endDate: LocalDateTime): Flow<List<EventEntity>>
 }

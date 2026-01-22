@@ -18,6 +18,7 @@ data class CalendarEvent(
     val reminder: ReminderType? = null,
     val recurrenceRule: String? = null,  // RFC 5545 RRULE
     val calendarId: String? = null,      // 订阅日历ID
+    val subscriptionId: Long? = null,    // 关联的订阅ID
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now()
 ) {

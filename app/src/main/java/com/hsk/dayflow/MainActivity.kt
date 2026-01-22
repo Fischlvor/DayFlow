@@ -50,8 +50,15 @@ class MainActivity : ComponentActivity() {
                     drawerState = drawerState,
                     drawerContent = {
                         AppDrawerContent(
-                            onItemClick = {
+                            onCalendarClick = {
                                 scope.launch { drawerState.close() }
+                                navController.navigate("calendar") {
+                                    popUpTo("calendar") { inclusive = true }
+                                }
+                            },
+                            onSettingsClick = {
+                                scope.launch { drawerState.close() }
+                                navController.navigate("settings")
                             }
                         )
                     }
@@ -72,7 +79,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun AppDrawerContent(
-    onItemClick: () -> Unit
+    onCalendarClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     ModalDrawerSheet {
         Column(
@@ -98,7 +106,7 @@ private fun AppDrawerContent(
                 icon = { Icon(Icons.Default.CalendarMonth, contentDescription = null) },
                 label = { Text("日历") },
                 selected = true,
-                onClick = onItemClick,
+                onClick = onCalendarClick,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -106,15 +114,7 @@ private fun AppDrawerContent(
                 icon = { Icon(Icons.Default.Settings, contentDescription = null) },
                 label = { Text("设置") },
                 selected = false,
-                onClick = onItemClick,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            NavigationDrawerItem(
-                icon = { Icon(Icons.Default.Info, contentDescription = null) },
-                label = { Text("关于") },
-                selected = false,
-                onClick = onItemClick,
+                onClick = onSettingsClick,
                 modifier = Modifier.fillMaxWidth()
             )
         }
