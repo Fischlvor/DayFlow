@@ -24,6 +24,7 @@ data class EventEntity(
     val reminderMinutes: Long? = null,
     val recurrenceRule: String? = null,
     val calendarId: String? = null,
+    val subscriptionId: Long? = null,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now()
 ) {
@@ -43,6 +44,7 @@ data class EventEntity(
             reminder = reminderMinutes?.let { ReminderType.fromMinutes(it) },
             recurrenceRule = recurrenceRule,
             calendarId = calendarId,
+            subscriptionId = subscriptionId,
             createdAt = createdAt,
             updatedAt = updatedAt
         )
@@ -65,6 +67,7 @@ data class EventEntity(
                 reminderMinutes = event.reminder?.minutesBefore,
                 recurrenceRule = event.recurrenceRule,
                 calendarId = event.calendarId,
+                subscriptionId = event.subscriptionId,
                 createdAt = event.createdAt,
                 updatedAt = event.updatedAt
             )

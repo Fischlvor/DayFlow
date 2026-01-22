@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hsk.dayflow.core.common.DateUtils
+import com.hsk.dayflow.core.lunar.LunarCalendar
 import com.hsk.dayflow.core.model.CalendarEvent
 import java.time.LocalDate
 
@@ -27,10 +28,16 @@ fun DayCell(
     isCurrentMonth: Boolean,
     events: List<CalendarEvent>,
     onDateClick: (LocalDate) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showLunar: Boolean = true
 ) {
     val isToday = DateUtils.isToday(date)
     val isWeekend = DateUtils.isWeekend(date)
+    
+    // 获取农历信息
+    val lunarText = if (showLunar) LunarCalendar.getLunarDayText(date) else null
+    val lunarDate = if (showLunar) LunarCalendar.solarToLunar(date) else null
+    val isFestival = lunarDate?.festival != null || lunarDate?.solarTerm != null
 
     val textColor = when {
         isSelected -> MaterialTheme.colorScheme.onPrimary
@@ -38,6 +45,13 @@ fun DayCell(
         isToday -> MaterialTheme.colorScheme.primary
         isWeekend -> MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
         else -> MaterialTheme.colorScheme.onSurface
+    }
+    
+    val lunarColor = when {
+        isSelected -> MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+        !isCurrentMonth -> MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+        isFestival -> MaterialTheme.colorScheme.tertiary
+        else -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
     }
 
     val backgroundColor = when {
@@ -52,7 +66,7 @@ fun DayCell(
             .clip(RoundedCornerShape(8.dp))
             .background(backgroundColor)
             .clickable { onDateClick(date) }
-            .padding(4.dp),
+            .padding(2.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -63,8 +77,22 @@ fun DayCell(
             fontWeight = if (isToday || isSelected) FontWeight.Bold else FontWeight.Normal,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(2.dp))
+        
+        // 农历显示
+        if (showLunar && lunarText != null) {
+            Text(
+                text = lunarText,
+                color = lunarColor,
+                fontSize = 8.sp,
+                fontWeight = if (isFestival) FontWeight.Medium else FontWeight.Normal,
+                textAlign = TextAlign.Center,
+                maxLines = 1
+            )
+        }
+        
+        // 事件指示器
         if (events.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(1.dp))
             EventIndicators(events = events.take(3))
         }
     }

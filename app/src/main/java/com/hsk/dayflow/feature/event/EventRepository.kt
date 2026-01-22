@@ -20,17 +20,17 @@ class EventRepository @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
     fun getAllEvents(): Flow<List<CalendarEvent>> =
-        eventDao.getAllEvents().map { entities -> entities.map { it.toCalendarEvent() } }
+        eventDao.getVisibleEvents().map { entities -> entities.map { it.toCalendarEvent() } }
 
     suspend fun getEventById(eventId: Long): CalendarEvent? = withContext(ioDispatcher) {
         eventDao.getEventById(eventId)?.toCalendarEvent()
     }
 
     fun getEventsForDate(date: LocalDate): Flow<List<CalendarEvent>> =
-        eventDao.getEventsForDate(date.atStartOfDay()).map { it.map { e -> e.toCalendarEvent() } }
+        eventDao.getVisibleEventsForDate(date.atStartOfDay()).map { it.map { e -> e.toCalendarEvent() } }
 
     fun getEventsBetween(startDate: LocalDate, endDate: LocalDate): Flow<List<CalendarEvent>> =
-        eventDao.getEventsBetween(startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX))
+        eventDao.getVisibleEventsBetween(startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX))
             .map { it.map { e -> e.toCalendarEvent() } }
 
     fun getEventsForMonth(year: Int, month: Int): Flow<List<CalendarEvent>> {

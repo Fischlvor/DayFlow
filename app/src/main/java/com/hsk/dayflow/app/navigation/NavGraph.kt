@@ -8,12 +8,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.hsk.dayflow.feature.calendar.CalendarScreen
 import com.hsk.dayflow.feature.event.EventScreen
+import com.hsk.dayflow.feature.settings.SettingsScreen
+import com.hsk.dayflow.feature.subscription.SubscriptionScreen
 
 object Routes {
     const val CALENDAR = "calendar"
     const val EVENT_DETAIL = "event/{eventId}"
     const val EVENT_ADD = "event/add?date={date}"
     const val SETTINGS = "settings"
+    const val SUBSCRIPTIONS = "subscriptions"
 
     fun eventDetail(eventId: Long) = "event/$eventId"
     fun eventAdd(date: String? = null) = if (date != null) "event/add?date=$date" else "event/add"
@@ -56,7 +59,14 @@ fun AppNavGraph(
         }
 
         composable(Routes.SETTINGS) {
-            // SettingsScreen
+            SettingsScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToSubscriptions = { navController.navigate(Routes.SUBSCRIPTIONS) }
+            )
+        }
+
+        composable(Routes.SUBSCRIPTIONS) {
+            SubscriptionScreen(onNavigateBack = { navController.popBackStack() })
         }
     }
 }
